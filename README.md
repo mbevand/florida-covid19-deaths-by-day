@@ -5,7 +5,11 @@ appears to updated the table once a day around 10am-11am Eastern time.
 [tbl]: https://fdoh.maps.arcgis.com/home/item.html?id=230270972343459a812a1ae8c28574a6
 
 The [download](download) Python script automatically downloads the table, converts it from
-JSON to CSV format, and saves it as `deathsbydateexport_YYYYMMDD.csv`.
+JSON to CSV format, and saves it as `deathsbydateexport_YYYYMMDD.csv`. The columns are:
+
+* `Date`: milliseconds since UNIX Epoch time
+* `Deaths`: number of deaths on this date
+* `ObjectId`: unknown—not important
 
 If for whatever reason you want to download the table without using the script:
 
