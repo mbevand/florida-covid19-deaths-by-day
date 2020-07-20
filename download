@@ -4,6 +4,7 @@ import os, datetime, json, requests
 import pandas as pd
 
 fprev = list(filter(lambda x: x.endswith('.csv'), sorted(os.listdir('.'))))[-1]
+fprev_content = open(fprev).read()
 url = "https://services1.arcgis.com/CY1LXxl9zlJeBuRZ/ArcGIS/rest/services/Florida_COVID_19_Deaths_by_Day/FeatureServer/0/query?where=ObjectId>0&objectIds=&time=&resultType=standard&outFields=*&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&sqlFormat=none&f=pjson&token="
 JSONContent = requests.get(url).json()
 df = pd.DataFrame([row['attributes'] for row in JSONContent['features']])
@@ -11,8 +12,11 @@ df = pd.DataFrame([row['attributes'] for row in JSONContent['features']])
 tstamp = datetime.datetime.now().strftime('%Y%m%d')
 fnew = f'deathsbydateexport_{tstamp}.csv'
 df.to_csv(fnew, index=False)
-if open(fprev).read() == open(fnew).read():
+if fprev_content == open(fnew).read():
     print('No updated Florida_COVID_19_Deaths_by_Day dataset')
-    os.unlink(fnew)
+    # We could be overwriting the same file (if the script is run multiple times
+    # per day), so only delete what we just downloaded if the filename was different
+    if fnew != fprev:
+        os.unlink(fnew)
 else:
     print('Found updated Florida_COVID_19_Deaths_by_Day dataset')
