@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import os, datetime, json, requests
+import sys, os, datetime, json, requests
 import pandas as pd
 
 fprev = list(filter(lambda x: x.endswith('.csv'), sorted(os.listdir('.'))))[-1]
@@ -18,5 +18,7 @@ if fprev_content == open(fnew).read():
     # per day), so only delete what we just downloaded if the filename was different
     if fnew != fprev:
         os.unlink(fnew)
+    sys.exit(1)
 else:
     print('Found updated Florida_COVID_19_Deaths_by_Day dataset')
+    sys.exit(0)
