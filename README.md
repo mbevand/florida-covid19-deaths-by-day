@@ -44,8 +44,8 @@ reported by *x* days:
 ![Deaths occurred vs deatsh reported](chart_deaths_occurred_vs_reported.png)
 
 This chart, created by the script [chart_deaths_occurred_vs_reported](chart_deaths_occurred_vs_reported),
-shows the reporting lag. Because of the lag,, in periods of increasing deaths data by date of death is
-always higher than by date of report.
+shows the reporting lag. **Deaths by date of death are always higher than deaths by date
+of report in periods of increasing deaths** (because of the lag.)
 
 ## Fetching "deaths by day"
 
