@@ -1,6 +1,6 @@
 The CSV files in this repository are daily exports of the
 [`Florida_COVID_19_Deaths_by_Day`][tbl] table. The Florida Department of Health
-appears to updated the table once a day around 10am-11am Eastern time.
+appears to update the table once a day around 10am-11am Eastern time.
 
 [tbl]: https://fdoh.maps.arcgis.com/home/item.html?id=230270972343459a812a1ae8c28574a6
 
