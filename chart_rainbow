@@ -1,0 +1,97 @@
+#!/usr/bin/python3
+
+import sys, datetime, os, math
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+# Y units are about <y_units_per_x_unit> denser than X units.
+# This is used to calculate the angle of annotations.
+y_units_per_x_unit = 4
+data = {}
+
+def parse_date(s):
+    return datetime.datetime.strptime(s[:8], '%Y%m%d').date()
+
+def record(as_of, date_of_death, deaths):
+    if date_of_death not in data:
+        data[date_of_death] = []
+    data[date_of_death].append((as_of, deaths))
+
+def dump():
+    for date_of_death in sorted(data.keys()):
+        print(f'{date_of_death}', end='')
+        for (as_of, deaths) in data[date_of_death]:
+            print(f' {as_of}:{deaths}', end='')
+        print('')
+
+def col(i, max_days):
+    return plt.cm.jet(round(255 * i / max_days))
+
+def chart(fname):
+    (fig, ax) = plt.subplots(dpi=300)
+    max_days = 1 + 40
+    i = 0
+    for date_of_death in sorted(data.keys())[-max_days:]:
+        # data may not be sorted
+        data[date_of_death].sort()
+        days_past_date = [(x[0] - date_of_death).days for x in data[date_of_death]]
+        deaths = [x[1] for x in data[date_of_death]]
+        if len(days_past_date) > 1:
+            angle = math.atan((deaths[-1] - deaths[-2]) / y_units_per_x_unit)
+            xytext = (int(math.cos(angle) * 14), int(math.sin(angle) * 14))
+            angle = angle / math.pi * 180
+            color = col(i, max_days)
+            ax.annotate(str(date_of_death), (days_past_date[-1], deaths[-1]),
+                    ha='center', va='center', fontsize=4, rotation=angle,
+                    xytext=xytext, textcoords='offset points', alpha=color[3])
+            ax.plot(days_past_date, deaths, label=str(date_of_death),
+                    color=color, linewidth=1.0)
+        i += 1
+    ax.grid(True, which='minor', linewidth=0.1)
+    ax.grid(True, which='major', linewidth=0.3)
+    ax.spines['top'].set_visible(False)
+    ax.spines['bottom'].set_visible(True)
+    ax.spines['left'].set_visible(True)
+    ax.spines['right'].set_visible(False)
+    ax.set_ylabel('Number of deaths reported')
+    ax.set_xlabel('Days after date of death')
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=1))
+    ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=1))
+    ax.set_xlim(left=0)
+    ax.set_ylim(bottom=0)
+    fig.suptitle('Florida COVID-19 deaths by day')
+    ax.text(
+            -0.05, -0.14,
+    'Each curve represents "Deaths by Day", the number of deaths on a given day. The Florida Department of Health\n'
+    'labels this data table Florida_COVID_19_Deaths_by_Day. As time goes by, more deaths are processed and assigned\n'
+    'to the correct calendar day, so the curve goes up. FDOH warns that recent data is incomplete. However the initial\n'
+    'steepness of the curve gives an intuitive sense of how many deaths will be approximately reported.\n'
+    'Source: https://github.com/mbevand/florida-covid19-deaths-by-day    Created by: Marc Bevand — @zorinaq',
+            transform=ax.transAxes, fontsize='x-small', verticalalignment='top',
+    )
+    ax.legend(bbox_to_anchor=(-.03, -.30), loc='upper left', fontsize='x-small', ncol=5)
+    fig.savefig(fname, bbox_inches='tight')
+    plt.close()
+
+def main():
+    for f in sorted(os.listdir('.')):
+        if not f.endswith('.csv'):
+            continue
+        df = pd.read_csv(f)
+        # Parse date out of "deathsbydateexport_20200623.csv"
+        as_of = parse_date(f.split('_')[1])
+        found_date_of_death_for_same_day = False
+        for _, row in df.iterrows():
+            date_of_death = datetime.datetime.utcfromtimestamp(row['Date'] / 1000).date()
+            record(as_of, date_of_death, int(row['Deaths']))
+            found_date_of_death_for_same_day |= (as_of == date_of_death)
+        if not found_date_of_death_for_same_day:
+            # if the CSV file has no deaths recorded for the date of death the CSV file was published,
+            # it means it is zero
+            record(as_of, as_of, 0)
+    #dump()
+    chart('chart_rainbow.png')
+
+if __name__ == '__main__':
+    main()

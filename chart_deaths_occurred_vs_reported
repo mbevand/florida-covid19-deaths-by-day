@@ -1,0 +1,92 @@
+#!/usr/bin/python3
+
+import sys, datetime, os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import matplotlib.dates as mdates
+import matplotlib.transforms as mtransforms
+
+csv_deaths_reported = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv'
+
+def parse_date(s):
+    return datetime.datetime.strptime(s[:10], '%Y-%m-%d').date()
+
+def parse_msec(s):
+    return datetime.datetime.utcfromtimestamp(s / 1000).date()
+
+avg_days_default = 7
+def sma(arr, avg_days=avg_days_default):
+    # Calculate N-day Simple Moving Average on array:
+    #   [('2020-01-01', 1), ('2020-01-02', 2)]
+    # But if the last day show 0, ignore it.
+    if not arr[-1][1]:
+        arr = arr[:-1]
+    arr2 = []
+    i = avg_days - 1
+    while i < len(arr):
+        vals = [x[1] for x in arr[i - avg_days + 1:i + 1]]
+        arr2.append((arr[i][0], np.mean(vals)))
+        i += 1
+    return arr2
+
+def main():
+    # deaths by day
+    fname = list(filter(lambda x: x.endswith('.csv'), sorted(os.listdir('.'))))[-1]
+    df = pd.read_csv(fname)
+    (fig, ax) = plt.subplots(dpi=300)
+    deaths = []
+    for _, row in df.iterrows():
+        x = parse_msec(row['Date'])
+        if str(x) < '2020-01-01':
+            # some rows occasionally have bogus data, eg. deathsbydateexport_20200723.csv
+            # has a death recorded in 1989. ignore it
+            continue
+        deaths.append((parse_msec(row['Date']), row['Deaths']))
+    deaths = sma(deaths)
+    ax.plot([x[0] for x in deaths], [x[1] for x in deaths], ls='--',
+            label='Deaths by date death occurred (Florida_COVID_19_Deaths_by_Day)')
+    last_day = deaths[-1][0]
+    # deaths by date of report
+    df = pd.read_csv(csv_deaths_reported)
+    flo = df[df['state'] == 'Florida']
+    deaths = []
+    last = None
+    for _, row in flo.iterrows():
+        if last is not None:
+            new_deaths = row['deaths'] - last
+            deaths.append((parse_date(row['date']), new_deaths))
+        last = row['deaths']
+    deaths = sma(deaths)
+    ax.plot([x[0] for x in deaths], [x[1] for x in deaths], ls='-',
+            label='Deaths by date death reported on Florida COVID-19 dashbard')
+    last_day = max(last_day, deaths[-1][0])
+    # config
+    ax.fill_between([last_day + datetime.timedelta(days=-10), last_day], 0, 1,
+                transform=mtransforms.blended_transform_factory(ax.transData, ax.transAxes),
+                facecolor='grey', alpha=0.9, hatch='')
+    ax.annotate('Deaths by date death occurred is\n'
+            'incomplete especially in last 10 days (shaded area)',
+            xy=(0.88, .02), xycoords='axes fraction', color='r',
+            horizontalalignment='right', verticalalignment='bottom')
+    ax.annotate('Deaths by date death occurred: 7-day SMA of '
+            'https://fdoh.maps.arcgis.com/home/item.html?id=230270972343459a812a1ae8c28574a6\n'
+            f'Deaths by date death reported: 7-day SMA of {csv_deaths_reported}\n'
+            'Source: https://github.com/mbevand/florida-covid19-deaths-by-day    Created by: Marc Bevand — @zorinaq',
+            xy=(-.12, -.2), xycoords='axes fraction', horizontalalignment='left', verticalalignment='top',
+            fontsize='xx-small')
+    ax.grid(True, linewidth=0.5)
+    ax.set_ylim(bottom=0)
+    ax.set_xlim(left=datetime.date(2020, 3, 15))
+    ax.legend(fontsize='small')
+    ax.tick_params(axis="x", which="both", labelsize='x-small')
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    fig.autofmt_xdate()
+    fig.suptitle('Florida COVID-19 deaths\n')
+    fig.savefig('chart_deaths_occurred_vs_reported.png', bbox_inches='tight')
+    plt.close()
+
+if __name__ == '__main__':
+    main()
