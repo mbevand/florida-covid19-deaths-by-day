@@ -37,7 +37,7 @@ shows the average reporting delay, and fits an exponential distribution. We see 
 The exponential distribution gives the proportion of deaths that are expected to have been
 reported by *x* days:
 
-*1 - e<sup>-0.1864x</sup>*
+*1 - e<sup>-0.1837x</sup>*
 
 ## Deaths occurred vs deatsh reported
 
