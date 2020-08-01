@@ -23,6 +23,14 @@ day, so the curve goes up. The initial steepness of the curve gives an intuitive
 of how many deaths will be approximately reported, despite the data being incomplete.
 The leftmost curves are expected to establish new record-high numbers of deaths.
 
+## Bar chart of deaths by day
+
+![Bar chart of deaths by day](chart_bars.png)
+
+This is a simple chart showing deaths by day, created by the script
+[chart_bars](chart_bars).  The coloring emphasizes the significant delays in
+death reporting.
+
 ## Average reporting delay
 
 ![Average reporting delay](chart_average_reporting_delay.png)
@@ -39,9 +47,9 @@ reported by *x* days:
 
 *1 - e<sup>-0.1837x</sup>*
 
-## Deaths occurred vs deatsh reported
+## Deaths occurred vs deaths reported
 
-![Deaths occurred vs deatsh reported](chart_deaths_occurred_vs_reported.png)
+![Deaths occurred vs deaths reported](chart_deaths_occurred_vs_reported.png)
 
 This chart, created by the script [chart_deaths_occurred_vs_reported](chart_deaths_occurred_vs_reported),
 shows the reporting lag. **Deaths by date of death are always higher than deaths by date
