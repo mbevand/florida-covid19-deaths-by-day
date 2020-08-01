@@ -81,6 +81,8 @@ def main():
         df = pd.read_csv(f)
         # Parse date out of "deathsbydateexport_20200623.csv"
         as_of = parse_date(f.split('_')[1])
+        #if as_of.weekday() != 2:
+        #    continue
         found_date_of_death_for_same_day = False
         for _, row in df.iterrows():
             date_of_death = datetime.datetime.utcfromtimestamp(row['Date'] / 1000).date()
