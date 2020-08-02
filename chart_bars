@@ -93,7 +93,7 @@ def chart(daily_averages, daily_averages_adj):
             label = 'Earlier'
         else:
             label = None
-        hndl = ax.bar(x, y, color=col(i, max_colors), label=label)
+        hndl = ax.bar(x, y, width=.9, color=col(i, max_colors), label=label)
         if label:
             hndls.append(hndl)
     ax.grid(True, which='minor', axis='y', linewidth=0.5, alpha=.5)
