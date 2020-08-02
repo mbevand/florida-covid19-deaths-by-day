@@ -43,6 +43,7 @@ def chart():
     def func_exp(x, a):
         return 1 - np.exp(a * x)
     popt, pcov = curve_fit(func_exp, [x[0] for x in xy_fit], [x[1] for x in xy_fit])
+    open('curve_fit.txt', 'w').write(f'{popt[0]:.4f}\n')
     x2 = np.linspace(0, right)
     ax.plot(x2, 100 * func_exp(x2, *popt), color='red', alpha=0.5, linewidth=3,
             label=f'curve_fit: $1-e^{{{popt[0]:.4f}x}}$')
