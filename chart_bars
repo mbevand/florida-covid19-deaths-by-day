@@ -66,8 +66,8 @@ def chart(daily_averages, daily_averages_adj):
     hndls.append(hndl)
     hndl, = ax.plot([x[0] for x in daily_averages_adj], [x[1] for x in daily_averages_adj],
             color='black', ls='solid', lw=1,
-            label='Expected deaths, adjusted for a reporting delay that\n'
-            f'follows the exponential distribution $1-e^{{{curve_param:.4f}x}}$')
+            label='Expected deaths adjusted for reporting delay '
+            f'(exponential distribution $\lambda={curve_param:.4f}$)')
     hndls.append(hndl)
     first_legend = ax.legend(handles=hndls, loc='upper left', fontsize='x-small')
     hndls = []
@@ -96,7 +96,7 @@ def chart(daily_averages, daily_averages_adj):
         hndl = ax.bar(x, y, color=col(i, max_colors), label=label)
         if label:
             hndls.append(hndl)
-    ax.grid(True, which='minor', axis='y', linewidth=0.2)
+    ax.grid(True, which='minor', axis='y', linewidth=0.5, alpha=.5)
     ax.grid(True, which='major', linewidth=0.5)
     ax.spines['top'].set_visible(False)
     ax.spines['bottom'].set_visible(True)
