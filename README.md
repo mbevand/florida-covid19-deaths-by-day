@@ -28,8 +28,10 @@ The leftmost curves are expected to establish new record-high numbers of deaths.
 ![Bar chart of deaths by day](chart_bars.png)
 
 This is a simple chart showing deaths by day, created by the script
-[chart_bars](chart_bars).  The coloring emphasizes the significant delays in
-death reporting.
+[chart_bars](chart_bars). The colors emphasize the significant delays in
+death reporting. Each day the state reports more deaths, a new "layer" of colors
+is added to the bars, with most deaths having occurred in recent days, and some
+deaths having occurred weeks earlier.
 
 ## Average reporting delay
 

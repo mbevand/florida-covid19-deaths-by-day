@@ -10,9 +10,24 @@ import scipy.stats as stats
 from scipy.optimize import curve_fit
 
 data = {}
+avg_days_default = 7
+curve_param = None
 
 def parse_date(s):
     return datetime.datetime.strptime(s[:8], '%Y%m%d').date()
+
+def cma(arr, avg_days=avg_days_default):
+    # Calculate N-day Centered Moving Average on array, eg.:
+    #   [(<date1>, 1), (<date2>, 2)]
+    assert avg_days % 2 == 1
+    half = int(avg_days / 2)
+    arr2 = []
+    i = half
+    while i < len(arr) - half:
+        vals = [x[1] for x in arr[i - half:i + half + 1]]
+        arr2.append((arr[i][0], np.mean(vals)))
+        i += 1
+    return arr2
 
 def record(as_of, date_of_death, deaths):
     if as_of not in data:
@@ -27,9 +42,36 @@ def col(i, max_colors):
         c = plt.cm.tab20b(i - 20)
     return c
 
-def chart():
+def calc_averages():
+    last_as_of = sorted(data.keys())[-1]
+    # pairs of (date, nr_of_deaths)
+    pairs = sorted(list(data[last_as_of].items()))
+    pairs_adj = []
+    for date, n in pairs:
+        after = (last_as_of - date).days
+        # calculate the expected number of deaths based on the average delay in reporting them:
+        # "1 - e^(curve_param * X)" estimates the fraction of deaths expected to be reported
+        # X days after the date of death
+        n_adj = n / (1 - np.e**(curve_param * after))
+        pairs_adj.append((date, n_adj))
+    return cma(pairs), cma(pairs_adj)
+
+def chart(daily_averages, daily_averages_adj):
     max_colors = 40
     (fig, ax) = plt.subplots(dpi=300, figsize=(8, 5))
+    hndls = []
+    hndl, = ax.plot([x[0] for x in daily_averages], [x[1] for x in daily_averages],
+            color='black', ls='dashed', lw=1,
+            label=f'{avg_days_default}-day centered moving average of daily deaths')
+    hndls.append(hndl)
+    hndl, = ax.plot([x[0] for x in daily_averages_adj], [x[1] for x in daily_averages_adj],
+            color='black', ls='solid', lw=1,
+            label='Expected deaths, adjusted for a reporting delay that\n'
+            f'follows the exponential distribution $1-e^{{{curve_param:.4f}x}}$')
+    hndls.append(hndl)
+    first_legend = ax.legend(handles=hndls, loc='upper left', fontsize='x-small')
+    hndls = []
+    fig.gca().add_artist(first_legend)
     first_date_of_death = datetime.date(2020, 5, 15)
     last_as_of = sorted(data.keys())[-1]
     last_date_of_death = sorted(data[last_as_of].keys())[-1]
@@ -51,7 +93,9 @@ def chart():
             label = 'Earlier'
         else:
             label = None
-        ax.bar(x, y, color=col(i, max_colors), label=label)
+        hndl = ax.bar(x, y, color=col(i, max_colors), label=label)
+        if label:
+            hndls.append(hndl)
     ax.grid(True, which='minor', axis='y', linewidth=0.2)
     ax.grid(True, which='major', linewidth=0.5)
     ax.spines['top'].set_visible(False)
@@ -59,18 +103,18 @@ def chart():
     ax.spines['left'].set_visible(True)
     ax.spines['right'].set_visible(False)
     ax.set_ylabel('Number of deaths')
-    ax.set_xlabel('Date of death')
+    ax.set_xlabel('Date death occurred')
     ax.xaxis.set_minor_locator(mdates.DayLocator())
     ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=5))
     ax.set_xlim(left=first_date_of_death + datetime.timedelta(days=-1),
             right=last_date_of_death + datetime.timedelta(days=1))
-    ax.text(1, 1, 'Deaths reported on:', transform=ax.transAxes, va='bottom', fontsize='xx-small')
-    ax.legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize='xx-small', ncol=1, frameon=False)
-    ax.text(0, -.3,
-'This chart demonstrates the significant delays in death data reporting that the Florida Department\n'
-'of Health cautions about. Source: https://github.com/mbevand/florida-covid19-deaths-by-day\n'
+    ax.text(1, 1, 'Date death reported:', transform=ax.transAxes, va='bottom', fontsize='xx-small')
+    ax.legend(handles=hndls, bbox_to_anchor=(1, 1), loc='upper left', fontsize='xx-small', ncol=1, frameon=False)
+    ax.text(-.07, -.27,
+'This chart demonstrates the significant delays between the date deaths occur and the date deaths are reported\n'
+'by the Florida Department of Health. Source: https://github.com/mbevand/florida-covid19-deaths-by-day\n'
 'Created by: Marc Bevand — @zorinaq',
         transform=ax.transAxes, va='top', fontsize='small',
     )
@@ -80,6 +124,8 @@ def chart():
     plt.close()
 
 def main():
+    global curve_param
+    curve_param = float(open('curve_fit.txt').read())
     for f in sorted(os.listdir('.')):
         if not f.endswith('.csv'):
             continue
@@ -91,7 +137,7 @@ def main():
             if str(date_of_death) < '2020-01-01':
                 continue
             record(as_of, date_of_death, int(row['Deaths']))
-    chart()
+    chart(*calc_averages())
 
 if __name__ == '__main__':
     main()
