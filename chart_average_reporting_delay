@@ -46,7 +46,7 @@ def chart():
     open('curve_fit.txt', 'w').write(f'{popt[0]:.4f}\n')
     x2 = np.linspace(0, right)
     ax.plot(x2, 100 * func_exp(x2, *popt), color='red', alpha=0.5, linewidth=3,
-            label=f'curve_fit: $1-e^{{{popt[0]:.4f}x}}$')
+            label=f'Exponential distribution $1-e^{{{popt[0]:.4f}x}}$')
     # calculates nr. of days to reach given fraction of reported deaths
     for frac in (.5, .85, .95):
         days = np.log(1 - frac) / popt[0]
