@@ -77,6 +77,7 @@ def chart(daily_averages, daily_averages_adj):
     last_date_of_death = sorted(data[last_as_of].keys())[-1]
     # iterate in reverse so that older (lower) bars are overlaid on top
     # of the more recent (higher) bars
+    i = 0
     for as_of in sorted(data.keys(), reverse=True):
         x, y = [], []
         for date_of_death in sorted(data[as_of].keys()):
@@ -86,7 +87,6 @@ def chart(daily_averages, daily_averages_adj):
             y.append(data[as_of][date_of_death])
         if not (x and y):
             continue
-        i = (last_as_of - as_of).days
         if i < max_colors - 1:
             label = str(as_of)
         elif i < max_colors:
@@ -94,6 +94,7 @@ def chart(daily_averages, daily_averages_adj):
         else:
             label = None
         hndl = ax.bar(x, y, width=.9, color=col(i, max_colors), label=label)
+        i += 1
         if label:
             hndls.append(hndl)
     ax.grid(True, which='minor', axis='y', linewidth=0.5, alpha=.5)
