@@ -30,7 +30,8 @@ in two steps:
   see [Average reporting delay](#average-reporting-delay); this gives us a CDF
   (cumulative distribution function)
 1. Deaths by day are multiplied by the inverse of the CDF. For example if at 4 days
-  after the date of deaths the CDF is 0.5, we multiply deaths by 1 / 0.5 = 2
+  after the date of death the CDF is 0.5 (meaning we expect 50% of deaths to be
+  reported,) we multiply deaths by 1 / 0.5 = 2
 
 ## "Rainbow" chart
 
@@ -54,10 +55,10 @@ shows the average reporting delay, and fits an exponential distribution. We see 
 * 85% of deaths are reported within 11 days
 * 95% of deaths are reported within 18 days
 
-The exponential distribution gives the proportion of deaths that are expected to have been
+The exponential distribution CDF gives the proportion of deaths that are expected to have been
 reported by *x* days:
 
-*1 - e<sup>-0.1837x</sup>*
+*1 - e<sup>-λx</sup>*
 
 ## Deaths occurred vs deaths reported
 
