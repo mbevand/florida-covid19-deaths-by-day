@@ -51,9 +51,9 @@ def calc_averages():
         # "after" set to 1 minimum (can't be zero, or else causes div by 0 below)
         after = max((last_as_of - date).days, 1)
         # calculate the expected number of deaths based on the average delay in reporting them:
-        # "1 - e^(curve_param * X)" estimates the fraction of deaths expected to be reported
+        # "1 - e^(-curve_param * X)" estimates the fraction of deaths expected to be reported
         # X days after the date of death
-        n_adj = n / (1 - np.e**(curve_param * after))
+        n_adj = n / (1 - np.e**(-curve_param * after))
         pairs_adj.append((date, n_adj))
     return cma(pairs), cma(pairs_adj)
 

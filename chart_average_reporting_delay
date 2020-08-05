@@ -41,15 +41,15 @@ def chart():
         ax.plot(x_days_past_date, y_deaths, color='black', linewidth=0.3, alpha=0.5)
     # fit into exponential function
     def func_exp(x, a):
-        return 1 - np.exp(a * x)
+        return 1 - np.exp(-a * x)
     popt, pcov = curve_fit(func_exp, [x[0] for x in xy_fit], [x[1] for x in xy_fit])
     open('curve_fit.txt', 'w').write(f'{popt[0]:.4f}\n')
     x2 = np.linspace(0, right)
     ax.plot(x2, 100 * func_exp(x2, *popt), color='red', alpha=0.5, linewidth=3,
-            label=f'Exponential distribution CDF $1-e^{{{popt[0]:.4f}x}}$')
+            label=f'Exponential distribution CDF $1-e^{{-{popt[0]:.4f}x}}$')
     # calculates nr. of days to reach given fraction of reported deaths
     for frac in (.5, .85, .95):
-        days = np.log(1 - frac) / popt[0]
+        days = np.log(1 - frac) / -popt[0]
         ax.annotate(f'{round(frac * 100)}% of deaths reported within {days:.1f} days',
                 xy=(days, 100 * frac), xycoords='data', textcoords='offset points', xytext=(50,-50),
                 arrowprops=dict(facecolor='black', width=1, headwidth=5, headlength=5), ha='left')
