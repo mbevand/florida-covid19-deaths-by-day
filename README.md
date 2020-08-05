@@ -12,6 +12,26 @@ is very often misinterpreted as decreasing deaths.
 This repository provides daily archives of *deaths by day* data, and scripts to
 analyze the completeness and reporting delays of this data.
 
+## Bar chart of deaths by day
+
+![Bar chart of deaths by day](chart_bars.png)
+
+This shows deaths by day, created by the script
+[chart_bars](chart_bars). The colors emphasize the significant delays in
+death reporting. Each day the state reports more deaths, a new "layer" of colors
+is added to the bars, with most deaths having occurred in recent days, and some
+deaths having occurred weeks earlier.
+
+The dashed line represent the moving average of deaths by day, while the solid
+line is deaths by day adjusted for reporting delays. The adjustment is performed
+in two steps:
+
+1. The average reporting delay is calculated by fitting an exponential distribution,
+  see [Average reporting delay](#average-reporting-delay); this gives us a CDF
+  (cumulative distribution function)
+1. Deaths by day are multiplied by the inverse of the CDF. For example if at 4 days
+  after the date of deaths the CDF is 0.5, we multiply deaths by 1 / 0.5 = 2
+
 ## "Rainbow" chart
 
 ![Rainbow chart](chart_rainbow.png)
@@ -22,16 +42,6 @@ certificates are processed and more deaths are assigned to the correct calendar
 day, so the curve goes up. The initial steepness of the curve gives an intuitive sense
 of how many deaths will be approximately reported, despite the data being incomplete.
 The leftmost curves are expected to establish new record-high numbers of deaths.
-
-## Bar chart of deaths by day
-
-![Bar chart of deaths by day](chart_bars.png)
-
-This is a simple chart showing deaths by day, created by the script
-[chart_bars](chart_bars). The colors emphasize the significant delays in
-death reporting. Each day the state reports more deaths, a new "layer" of colors
-is added to the bars, with most deaths having occurred in recent days, and some
-deaths having occurred weeks earlier.
 
 ## Average reporting delay
 
