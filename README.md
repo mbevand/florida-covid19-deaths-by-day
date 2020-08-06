@@ -56,7 +56,7 @@ shows the average reporting delay, and fits an exponential distribution. We see 
 * 95% of deaths are reported within 18 days
 
 The exponential distribution CDF gives the proportion of deaths that are expected to have been
-reported by *x* days:
+reported within *x* days:
 
 *1 - e<sup>-λx</sup>*
 
@@ -90,7 +90,7 @@ If for whatever reason you want to download the table without using the script:
 1. Type:
    ```
    Where: ObjectId>0
-   Result type: standard  (although seems to work with none too)
+   Result type: standard
    Out Fields: *
    Format: JSON
    ```
