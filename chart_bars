@@ -54,6 +54,7 @@ def calc_averages():
         # "1 - e^(-curve_param * X)" estimates the fraction of deaths expected to be reported
         # X days after the date of death
         n_adj = n / (1 - np.e**(-curve_param * after))
+        #print(f'{date} ({after}d lag): frac_reported={(1 - np.e**(-curve_param * after)):.2f}, adjusting {n:.0f} to {n_adj:.0f}')
         pairs_adj.append((date, n_adj))
     return cma(pairs), cma(pairs_adj)
 
