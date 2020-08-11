@@ -67,7 +67,7 @@ def chart(daily_averages, daily_averages_adj):
     hndls.append(hndl)
     hndl, = ax.plot([x[0] for x in daily_averages_adj], [x[1] for x in daily_averages_adj],
             color='black', ls='solid', lw=1,
-            label='Expected deaths adjusted for reporting delay '
+            label='Expected deaths adjusted for reporting delay\n'
             f'(exponential distribution $\lambda={curve_param:.4f}$)')
     hndls.append(hndl)
     first_legend = ax.legend(handles=hndls, loc='upper left', fontsize='x-small')
