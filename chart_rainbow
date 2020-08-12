@@ -57,7 +57,7 @@ def chart(fname):
     ax.set_ylabel('Number of deaths reported')
     ax.set_xlabel('Days after date of death')
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=1))
-    ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=1))
+    ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=5))
     ax.set_xlim(left=0)
     ax.set_ylim(bottom=0)
     fig.suptitle('Florida COVID-19 deaths by day')
