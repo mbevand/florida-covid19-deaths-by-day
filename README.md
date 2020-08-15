@@ -51,9 +51,9 @@ The leftmost curves are expected to establish new record-high numbers of deaths.
 This chart, created by the script [chart_average_reporting_delay](chart_average_reporting_delay),
 shows the average reporting delay, and fits an exponential distribution. We see that, on average:
 
-* 50% of deaths are reported within 4 days
-* 85% of deaths are reported within 11 days
-* 95% of deaths are reported within 18 days
+* 50% of deaths are reported within 5 days
+* 85% of deaths are reported within 12 days
+* 95% of deaths are reported within 19 days
 
 The exponential distribution CDF gives the proportion of deaths that are expected to have been
 reported within *x* days:
