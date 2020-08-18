@@ -79,7 +79,7 @@ def main():
     ax.grid(True, linewidth=0.5)
     ax.set_ylim(bottom=0)
     ax.set_xlim(left=datetime.date(2020, 3, 15))
-    ax.legend(fontsize='small')
+    ax.legend(fontsize='xx-small')
     ax.tick_params(axis="x", which="both", labelsize='x-small')
     ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
