@@ -66,10 +66,12 @@ def main():
     ax.fill_between([last_day + datetime.timedelta(days=-10), last_day], 0, 1,
                 transform=mtransforms.blended_transform_factory(ax.transData, ax.transAxes),
                 facecolor='grey', alpha=0.9, hatch='')
-    ax.annotate('Deaths by date death occurred is\n'
-            'incomplete especially in last 10 days (shaded area)',
-            xy=(0.88, .02), xycoords='axes fraction', color='r',
-            horizontalalignment='right', verticalalignment='bottom')
+    ax.annotate('Deaths by date death occurred\n'
+            'is incomplete especially in\n'
+            'last 10 days (shaded area)',
+            xy=(.90, .99), xycoords='axes fraction',
+            horizontalalignment='right', verticalalignment='top',
+            fontsize='xx-small')
     ax.annotate('Deaths by date death occurred: 7-day SMA of '
             'https://fdoh.maps.arcgis.com/home/item.html?id=230270972343459a812a1ae8c28574a6\n'
             f'Deaths by date death reported: 7-day SMA of {csv_deaths_reported}\n'
@@ -79,7 +81,7 @@ def main():
     ax.grid(True, linewidth=0.5)
     ax.set_ylim(bottom=0)
     ax.set_xlim(left=datetime.date(2020, 3, 15))
-    ax.legend(fontsize='xx-small')
+    ax.legend(fontsize=4, handlelength=5)
     ax.tick_params(axis="x", which="both", labelsize='x-small')
     ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
