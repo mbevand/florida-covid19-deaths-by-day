@@ -58,7 +58,7 @@ def calc_averages():
     return cma(pairs), cma(pairs_adj)
 
 def chart(daily_averages, daily_averages_adj):
-    max_colors = 80
+    max_colors = 40 * 3
     (fig, ax) = plt.subplots(dpi=300, figsize=(8, 5))
     hndls = []
     hndl, = ax.plot([x[0] for x in daily_averages], [x[1] for x in daily_averages],
@@ -113,7 +113,7 @@ def chart(daily_averages, daily_averages_adj):
     ax.set_xlim(left=first_date_of_death + datetime.timedelta(days=-1),
             right=last_date_of_death + datetime.timedelta(days=1))
     ax.text(1, 1, 'Date death reported:', transform=ax.transAxes, va='bottom', fontsize='xx-small')
-    ax.legend(handles=hndls, bbox_to_anchor=(1, 1), loc='upper left', fontsize='xx-small', ncol=2, frameon=False)
+    ax.legend(handles=hndls, bbox_to_anchor=(1, 1), loc='upper left', fontsize='xx-small', ncol=3, frameon=False)
     ax.text(-.07, -.27,
 'This chart demonstrates the significant delays between the date deaths occur and the date deaths are reported\n'
 'by the Florida Department of Health. Source: https://github.com/mbevand/florida-covid19-deaths-by-day\n'

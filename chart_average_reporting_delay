@@ -27,7 +27,7 @@ def dump():
 
 def chart():
     (fig, ax) = plt.subplots(dpi=300, figsize=(10, 5))
-    right = 40
+    right = 60
     xy_fit = []
     for date_of_death in sorted(data.keys()):
         final_deaths = data[date_of_death][-1][1]
