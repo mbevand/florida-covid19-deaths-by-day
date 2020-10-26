@@ -83,7 +83,7 @@ def main():
     ax.set_xlim(left=datetime.date(2020, 3, 15))
     ax.legend(fontsize=4, handlelength=5)
     ax.tick_params(axis="x", which="both", labelsize='x-small')
-    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO, interval=2))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     fig.autofmt_xdate()
     fig.suptitle('Florida COVID-19 deaths\n')

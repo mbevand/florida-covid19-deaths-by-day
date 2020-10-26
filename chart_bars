@@ -107,7 +107,7 @@ def chart(daily_averages, daily_averages_adj):
     ax.set_ylabel('Number of deaths')
     ax.set_xlabel('Date death occurred')
     ax.xaxis.set_minor_locator(mdates.DayLocator())
-    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO, interval=2))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=5))
     ax.set_xlim(left=first_date_of_death + datetime.timedelta(days=-1),
