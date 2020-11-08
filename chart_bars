@@ -70,7 +70,7 @@ def chart(daily_averages, daily_averages_adj):
             label='Expected deaths adjusted for reporting delay\n'
             f'(exponential distribution $\lambda={curve_param:.4f}$)')
     hndls.append(hndl)
-    first_legend = ax.legend(handles=hndls, loc='upper left', fontsize='x-small')
+    first_legend = ax.legend(handles=hndls, fontsize='x-small')
     hndls = []
     fig.gca().add_artist(first_legend)
     first_date_of_death = datetime.date(2020, 5, 15)
